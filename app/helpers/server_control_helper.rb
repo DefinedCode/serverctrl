@@ -22,7 +22,7 @@ module ServerControlHelper
     stderr = stderr.gets(nil)
     stdout = stdout.gets(nil)
     if stderr.nil?
-      cores = stdout.grep(/processer/).count
+      cores = stdout.split("\n").grep(/processor/).count
     else
       stdin, stdout, stderr = Open3.popen3("sysctl", "-n", "hw.ncpu")
       stderr =  stderr.gets(nil)
