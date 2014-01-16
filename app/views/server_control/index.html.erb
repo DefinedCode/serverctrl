@@ -1,2 +1,11 @@
-<h1>ServerControl#index</h1>
-<p>Find me in app/views/server_control/index.html.erb</p>
+<div class="jumbotron">
+  <div class="container">
+    <h1>Welcome to ServerCtrl.</h1>
+    <p>The current server time is <%= @analysed[2] %> and has been running for <% if @analysed[3].include?(":") %><%= @analysed[3] %> hours<% else %><%= @analysed[3] %> days<% if @analysed[3].to_i >= 100 %><%= "!" %><% else %><%= "." %><% end %><% end %></p>
+    <% if @analysed[0] == "high" %>
+      <div class="alert alert-danger">There is high load on the server! The average load is <%= @analysed[1] %></div>
+    <% else %>
+      <div class="alert alert-success">There is normal load on the server. The average load is <%= @analysed[1] %></div>
+    <% end %>
+  </div>
+</div>

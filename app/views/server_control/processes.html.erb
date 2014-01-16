@@ -1,0 +1,53 @@
+<div class="row">
+  <p class="lead nopadding">Check if process is running</p>
+  <hr class="smallabovemargin">
+  <form id="check_process_form" class="form-inline" role="form">
+    <div class="form-group">
+      <label class="sr-only" for="processid">Process ID</label>
+      <input type="text" class="form-control" id="processid" placeholder="Enter Process ID">
+    </div>
+    <button type="submit" class="btn btn-default">Check</button>
+  </form>
+  <span class="spacer">&nbsp;</span>
+  <% unless @status == "" %>
+    <% if @status.include? "not" %>
+      <div class="alert alert-danger"><%= @status %></div>
+    <% else %>
+      <div class="alert alert-success"><%= @status %></div>
+    <% end %>
+  <% end %>
+</div>
+<div class="row">
+  <p class="lead nopadding">Process List</p>
+  <small class="smallabovemargin">Sort the table by clicking the column header.</small>
+  <hr class="smallabovemargin">
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered sortable">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Process ID</th>
+          <th id="sortcpu">CPU (%)</th>
+          <th>Memory (%)</th>
+          <th>Command</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% @process_list.each do | ps | %>
+        <tr>
+          <% split = ps.split(" ") %>
+          <td><%= split[0] %></td>
+          <td><%= split[1] %></td>
+          <td><%= split[2] %></td>
+          <td><%= split[3] %></td>
+          <% if split[10..-1].join(" ").count("/") >= 2 %>
+            <td><%= split[10..-1].join(" ").split("/")[-1] %></td>
+          <% else %>
+            <td><%= split[10..-1].join(" ") %></td>
+          <% end %>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

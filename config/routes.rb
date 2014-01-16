@@ -1,5 +1,10 @@
 ServerCtrl::Application.routes.draw do
+  
   root "server_control#index"
+
+  get 'processes' => "server_control#processes"
+  get 'processes/:id' => "server_control#processes"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

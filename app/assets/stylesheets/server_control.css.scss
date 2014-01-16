@@ -1,3 +1,19 @@
 // Place all the styles related to the ServerControl controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+body {
+  padding-top: 70px;
+}
+table.sortable th {
+  cursor:pointer;
+}
+.spacer {
+  height: 20px;
+}
+.nopadding {
+  padding:0;
+  margin:0;
+}
+.smallabovemargin {
+  margin-top:5px;
+}
