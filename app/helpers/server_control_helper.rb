@@ -14,6 +14,12 @@ module ServerControlHelper
     return y <=> x
   end
 
+  def sort_ps_mem(x, y)
+    x = x.split(" ")[3].to_f
+    y = y.split(" ")[3].to_f
+    return y <=> x
+  end
+
   def analyse_uptime(str)
     uptime = str.split(" ")
     longminutes = uptime[-1]
@@ -35,9 +41,9 @@ module ServerControlHelper
 
     ideal = cores.to_f
     if longminutes.to_f >= (ideal - 0.3)
-      return ["high", longminutes, uptime[0], uptime[2]]
+      return ["high", longminutes, uptime[0], uptime[2], cores]
     else
-      return ["low", longminutes, uptime[0], uptime[2]]
+      return ["low", longminutes, uptime[0], uptime[2], cores]
     end
   end
 end

@@ -26,21 +26,26 @@
             <li><a href="processes">Processes</a></li>
             <li><a href="web">Web Server</a></li>
             <li><a href="setup">Setup</a></li>
+            <li><a href="logout">Logout</a></li>
           <% when "processes" %>
             <li><a href="/">Home</a></li>
             <li class="active"><a href="processes">Processes</a></li>
             <li><a href="web">Web Server</a></li>
             <li><a href="setup">Setup</a></li>
+            <li><a href="logout">Logout</a></li>
           <% when "web" %>
             <li><a href="/">Home</a></li>
             <li><a href="processes">Processes</a></li>
             <li class="active"><a href="web">Web Server</a></li>
             <li><a href="setup">Setup</a></li>
+            <li><a href="logout">Logout</a></li>
           <% when "setup" %>
             <li><a href="/">Home</a></li>
             <li><a href="processes">Processes</a></li>
             <li><a href="web">Web Server</a></li>
             <li class="active"><a href="setup">Setup</a></li>
+            <li><a href="logout">Logout</a></li>
+          <% when "login" %>
           <% end %>
         </ul>
       </div>
@@ -50,5 +55,27 @@
     <%= yield %>
   </div>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <% if controller.action_name == "index" %>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        function respondCanvas(){ 
+            $("canvas.respcanvas").each(function() {
+              var data = eval($(this).attr('id'));
+              $(this).attr('width', $(this).parent().width());
+              $(this).attr('height', $(this).parent().width() / 100 * 80);
+              var ctx = $(this).get(0).getContext("2d");
+              if ($(this).hasClass("pie")) {
+                var chart = new Chart(ctx).Pie(data);
+              }
+              else {
+                var chart = new Chart(ctx).Line(data, {scaleOverride: true, scaleStartValue: 0, scaleSteps: cores, scaleStepWidth: 1});
+              }
+            });
+        }
+        $(window).resize(respondCanvas);
+        respondCanvas();
+      }); 
+    </script>
+  <% end %>
 </body>
 </html>

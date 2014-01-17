@@ -4,6 +4,9 @@ ServerCtrl::Application.routes.draw do
 
   get 'processes' => "server_control#processes"
   get 'processes/:id' => "server_control#processes"
+  get 'login' => "server_control#login"
+  post 'login' => "server_control#login"
+  get 'logout' => "server_control#logout"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
