@@ -29,10 +29,35 @@ namespace :setup do
         end
         puts "Creating MongoDB indexes"
         Rake::Task["db:mongoid:create_indexes"].invoke
+        puts "Creating launch script"
+        f = File.open(Rails.root.join("init_script.sh"), 'r')
+        skip = f.readlines
+        f.close
+        skip[1] = "PROG_PATH=\"#{Rails.root}\"\n"
+        f = File.open(Rails.root.join("init_script.sh"), 'w')
+        f.write(skip.join)
+        f.close
+        File.chmod(0766, Rails.root.join("init_script.sh"))
+        puts "Launch script created."
+        if ask_question("Are you running on Mac OS X? (y/n)")
+          puts "Writing launch script to /usr/local/bin/"
+          FileUtils.copy(Rails.root.join("init_script.sh"), "/usr/local/bin/serverctrl")
+          osx = true
+        else
+          osx = false
+          puts "Moving script to /etc/init.d/ to allow for launching worldwide."
+          FileUtils.copy(Rails.root.join("init_script.sh"), "/etc/init.d/serverctrl")
+        end
         puts "----------------------------------------"
         puts "Setup completed successfully."
         puts "ServerCtrl installed."
-        puts "Please run 'rails s' in a screen session ('screen -d -m -S ServerCtrl rails s')"
+        puts "Make sure bundler is installed for root, `gem install bundler` or `sudo gem install bundler`."
+        puts "ServerCtrl must be run as root. Either prepend the following commands with sudo or run as root."
+        if osx
+          puts "To launch run 'serverctrl start' or 'sudo serverctrl start'"
+        else
+          puts "To launch run '/etc/init.d/serverctrl start' or 'sudo /etc/init.d/serverctrl start'"
+        end
         puts "Goodbye."
       else
         puts "Please install MongoDB, if apt is installed (usually on Ubuntu/Debian) use 'apt-get install mongodb', otherwise find out how to install MongoDB at http://mongodb.org."
