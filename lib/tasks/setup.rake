@@ -48,6 +48,8 @@ namespace :setup do
           puts "Moving script to /etc/init.d/ to allow for launching worldwide."
           FileUtils.copy(Rails.root.join("init_script.sh"), "/etc/init.d/serverctrl")
         end
+        puts "Getting inital load stats."
+        Rake::Task["generate_stats:load"].invoke
         puts "----------------------------------------"
         puts "Setup completed successfully."
         puts "ServerCtrl installed."
