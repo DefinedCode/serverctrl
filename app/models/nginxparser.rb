@@ -9,6 +9,8 @@ class NginxParser
 
   def parse
     lines = @lines
+    upstream_blocks = Hash.new
+    server_blocks = Hash.new
     while (ptr < lines.count) do
       line = lines[ptr]
       if line.match(/upstream ([a-zA-Z]+) {/)
