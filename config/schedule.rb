@@ -19,6 +19,6 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 5.minutes do
+every 15.minutes do
   rake "generate_stats:load"
 end

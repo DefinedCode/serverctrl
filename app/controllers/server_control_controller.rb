@@ -58,7 +58,13 @@ class ServerControlController < ApplicationController
     setup_nginx_dir = "/etc/nginx/conf.d/"
     first_conf = "/etc/nginx/conf.d/default.conf"
     parser = NginxParser.new(first_conf)
-    render :text => parser.parse.to_json
+    parsed = parser.parse.to_json
+
+
+  end
+
+  def setup
+    
   end
 
 end
