@@ -17,6 +17,14 @@ class ServerControlController < ApplicationController
     process_list = stdout.gets(nil).split("\n")[1..-1]
     @process_list_cpu = process_list.sort { |x, y| view_context.sort_ps(x, y) }.take(3)
     @process_list_mem = process_list.sort { |x, y| view_context.sort_ps_mem(x, y) }.take(3)
+    if os ==  "osx"
+      stdin, stdout = Open3.popen3('netstat', '-bi')
+      network = stdout.gets(nil)
+      @analysed_network = view_context.analyse_network(network, os)
+    else
+      network = File.open("/proc/net/dev") { |f| f.read }
+      @analysed_network = view_context.analyse_network(network, os)
+    end
   end
 
   def login
@@ -56,11 +64,9 @@ class ServerControlController < ApplicationController
 
   def web
     setup_nginx_dir = "/etc/nginx/conf.d/"
-    first_conf = "/etc/nginx/conf.d/default.conf"
+    first_conf = "/Users/will3942/Desktop/nginx.conf"
     parser = NginxParser.new(first_conf)
-    parsed = parser.parse.to_json
-
-
+    @parsed = parser.parse.to_json
   end
 
   def setup

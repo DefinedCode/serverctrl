@@ -46,4 +46,29 @@ module ServerControlHelper
       return ["low", longminutes, uptime[0], uptime[2], cores]
     end
   end
+
+  def analyse_network(str, os)
+    generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
+    netstats = Hash.new
+    if os == "osx"
+      interfaces = str.split("\n")
+      interfaces = interfaces[1..-1]
+      interfaces.each do |interface|
+        interface = interface.split(" ")
+        unless interface[6] == "0" and interface[9] == "0"
+          netstats[interface[0]] = {:received_bytes => interface[6], :transmitted_bytes => interface[9], :color => "##{generator.create_hex}"}
+        end
+      end
+    else
+      interfaces = str.split("\n")
+      interfaces = interfaces[1..-1]
+      interfaces.each do |interface|
+        interface = interface.split(" ")
+        unless interface[6] == "0" and interface[9] == "0"
+          netstats[interface[0].gsub(/:/, "")] = {:received_bytes => interface[1], :transmitted_bytes => interface[9], :color => "##{generator.create_hex}"}
+        end
+      end
+    end
+    return netstats
+  end
 end

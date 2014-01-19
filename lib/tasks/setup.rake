@@ -43,13 +43,23 @@ namespace :setup do
           puts "Writing launch script to /usr/local/bin/"
           FileUtils.copy(Rails.root.join("init_script.sh"), "/usr/local/bin/serverctrl")
           osx = true
+          @stat = Stat.create(
+            'type' => "os",
+            'value' => "osx",
+            )
         else
+          @stat = Stat.create(
+            'type' => "os",
+            'value' => "linux",
+            )
           osx = false
           puts "Moving script to /etc/init.d/ to allow for launching worldwide."
           FileUtils.copy(Rails.root.join("init_script.sh"), "/etc/init.d/serverctrl")
         end
         puts "Getting inital load stats."
         Rake::Task["generate_stats:load"].invoke
+        puts "Precompiling assets."
+        Rake::Task["assets:precompile"].invoke
         puts "----------------------------------------"
         puts "Setup completed successfully."
         puts "ServerCtrl installed."

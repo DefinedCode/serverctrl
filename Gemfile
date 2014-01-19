@@ -50,3 +50,5 @@ gem 'whenever', :require => false
 
 gem 'mongoid', github: 'mongoid/mongoid'
 gem 'bson_ext'
+
+gem 'color-generator'

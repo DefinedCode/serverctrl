@@ -19,4 +19,9 @@ class ApplicationController < ActionController::Base
   def current_user
     session[:user]
   end
+
+  def os
+    os = Stat.where(:type => "os").first.value
+    return os
+  end
 end
