@@ -25,6 +25,7 @@ class ServerControlController < ApplicationController
       network = File.open("/proc/net/dev") { |f| f.read }
       @analysed_network = view_context.analyse_network(network, os)
     end
+    @load = @day_load_history.sort[-1].round(1)
   end
 
   def login

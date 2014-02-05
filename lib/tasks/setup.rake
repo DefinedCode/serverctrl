@@ -9,6 +9,8 @@ namespace :setup do
     puts "----------------------------------------"
     if ask_question("Is this user and app running as root? (y/n)")
       if ask_question("Is MongoDB installed? (y/n)")
+        puts "Removing any existing data"
+        Rake::Task["db:mongoid:purge"].invoke
         puts "Starting to create your admin account."
         unless User.all.count > 0
           Rake::Task["user:create"].invoke
@@ -57,6 +59,7 @@ namespace :setup do
           FileUtils.copy(Rails.root.join("init_script.sh"), "/etc/init.d/serverctrl")
         end
         puts "Getting inital load stats."
+        Rake::Task["generate_stats:load"].invoke
         Rake::Task["generate_stats:load"].invoke
         puts "Precompiling assets."
         Rake::Task["assets:precompile"].invoke

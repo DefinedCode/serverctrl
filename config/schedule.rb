@@ -19,6 +19,14 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 15.minutes do
+every 1.hour do
   rake "generate_stats:load"
+end
+
+every 1.hour do
+  rake "generate_stats:innet"
+end
+
+every 1.hour do
+  rake "generate_stats:outnet"
 end

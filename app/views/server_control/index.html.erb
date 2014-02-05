@@ -1,7 +1,7 @@
 <div class="jumbotron">
   <div class="container">
     <h1>Welcome to ServerCtrl.</h1>
-    <p>The current server time is <%= @analysed[2] %> and has been running for <% if @analysed[3].include?(":") %><%= @analysed[3] %> hours<% else %><%= @analysed[3] %> days<% if @analysed[3].to_i >= 100 %><%= "!" %><% else %><%= "." %><% end %><% end %></p>
+    <p>The current server time is <%= @analysed[2] %> and has been running for <% if @analysed[3].include?(":") %><%= @analysed[3].split(":")[0] %> hours.<% else %><%= @analysed[3] %> days<% if @analysed[3].to_i >= 100 %><%= "!" %><% else %><%= "." %><% end %><% end %></p>
     <% if @analysed[0] == "high" %>
       <div class="alert alert-danger">There is high load on the server! The average load is <%= @analysed[1] %>.</div>
     <% else %>
@@ -13,7 +13,7 @@
   <div class="col-md-4">
     <p class="lead nopadding">Server Load</p>
     <small class="smallabovemargin">Shows the server load for today.</small><br />
-    <small class="smallabovemargin legend">Scale is 0 - <%= @analysed[4] %></small>
+    <small class="smallabovemargin legend">Scale is 0 - <%= @load %></small>
     <hr class="smallabovemargin">
     <canvas id="loadChart" class="respcanvas" width="100%" height="100%"></canvas>
   </div>
@@ -103,7 +103,7 @@
   </div>
 </div>
 <script type="text/javascript">
-  var cores = <%= @analysed[4].to_i %>;
+  var cores = <%= @load %>;
   var loadChart = {
     labels : [<%= @dates.map(&:to_s).join(", ") %>],
     datasets : [

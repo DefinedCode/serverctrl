@@ -61,7 +61,7 @@ module ServerControlHelper
       end
     else
       interfaces = str.split("\n")
-      interfaces = interfaces[1..-1]
+      interfaces = interfaces[2..-1]
       interfaces.each do |interface|
         interface = interface.split(" ")
         unless interface[6] == "0" and interface[9] == "0"
