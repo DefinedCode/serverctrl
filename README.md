@@ -27,7 +27,4 @@ Copyright (c) 2014 Defined Code Ltd. See the LICENSE file for license rights and
 
 ## Contact
 
-You can contact me @Will3942[0] or will@will3942.com[1]
-
-[0]: http://twitter.com/will3942
-[1]: mailto:will@will3942.com
+You can contact me [@Will3942](http://twitter.com/will3942) or [will@will3942.com](mailto:will@will3942.com)
