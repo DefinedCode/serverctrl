@@ -23,6 +23,8 @@ A - Please check the configuration file in `config/mongoid.yml`
 
 ## License
 
+Copyright (c) 2014 Defined Code Ltd. See the LICENSE file for license rights and limitations (MIT).
+
 ## Contact
 
 You can contact me @Will3942[0] or will@will3942.com[1]
