@@ -1,5 +1,5 @@
 #!/bin/bash
-PROG_PATH="/Users/will3942/projects/serverctrl"
+
 
 start() {
     if [ -e "$PROG_PATH/tmp/pids/server.pid" ]; then

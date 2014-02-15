@@ -31,19 +31,19 @@ namespace :setup do
         end
         puts "Creating MongoDB indexes"
         Rake::Task["db:mongoid:create_indexes"].invoke
-        puts "Creating launch script"
-        f = File.open(Rails.root.join("init_script.sh"), 'r')
-        skip = f.readlines
-        f.close
-        skip[1] = "PROG_PATH=\"#{Rails.root}\"\n"
-        f = File.open(Rails.root.join("init_script.sh"), 'w')
-        f.write(skip.join)
-        f.close
-        File.chmod(0766, Rails.root.join("init_script.sh"))
-        puts "Launch script created."
         if ask_question("Are you running on Mac OS X? (y/n)")
           puts "Writing launch script to /usr/local/bin/"
           FileUtils.copy(Rails.root.join("init_script.sh"), "/usr/local/bin/serverctrl")
+          puts "Creating launch script"
+          f = File.open("/usr/local/bin/serverctrl", 'r')
+          skip = f.readlines
+          f.close
+          skip[1] = "PROG_PATH=\"#{Rails.root}\"\n"
+          f = File.open("/usr/local/bin/serverctrl", 'w')
+          f.write(skip.join)
+          f.close
+          File.chmod(0766, "/usr/local/bin/serverctrl")
+          puts "Launch script created."
           osx = true
           @stat = Stat.create(
             'type' => "os",
@@ -57,6 +57,16 @@ namespace :setup do
           osx = false
           puts "Moving script to /etc/init.d/ to allow for launching worldwide."
           FileUtils.copy(Rails.root.join("init_script.sh"), "/etc/init.d/serverctrl")
+          puts "Creating launch script"
+          f = File.open("/etc/init.d/serverctrl", 'r')
+          skip = f.readlines
+          f.close
+          skip[1] = "PROG_PATH=\"#{Rails.root}\"\n"
+          f = File.open("/etc/init.d/serverctrl", 'w')
+          f.write(skip.join)
+          f.close
+          File.chmod(0766, "/etc/init.d/serverctrl")
+          puts "Launch script created."
         end
         puts "Getting inital load stats."
         Rake::Task["generate_stats:load"].invoke
