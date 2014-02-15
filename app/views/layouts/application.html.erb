@@ -63,7 +63,7 @@
             $("canvas.respcanvas").each(function() {
               var data = eval($(this).attr('id'));
               $(this).attr('width', $(this).parent().width());
-              $(this).attr('height', $(this).parent().width() / 100 * 80);
+              $(this).attr('height', $(this).parent().height() / 100 * 80);
               var ctx = $(this).get(0).getContext("2d");
               if ($(this).hasClass("pie")) {
                 if (alreadyRun >= 5) {

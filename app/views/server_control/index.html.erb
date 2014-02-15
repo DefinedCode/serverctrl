@@ -10,16 +10,18 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-12 limitheight">
     <p class="lead nopadding">Server Load</p>
     <small class="smallabovemargin">Shows the server load for today.</small><br />
     <small class="smallabovemargin legend">Scale is 0 - <%= @load %></small>
     <hr class="smallabovemargin">
-    <canvas id="loadChart" class="respcanvas" width="100%" height="100%"></canvas>
+    <canvas id="loadChart" class="respcanvas" width="1024" height="300"></canvas>
   </div>
-  <div class="col-md-4">
+</div>
+<div class="row">
+  <div class="col-md-6 limitheight">
     <p class="lead nopadding">High CPU Processes</p>
-    <small class="smallabovemargin">Shows the processes using the most CPU.</small><br />
+    <small class="smallabovemargin">Shows the processes using the most CPU (%).</small><br />
     <small class="smallabovemargin legend">
       <span>
       <% split = @process_list_cpu[0].split(" ") %>
@@ -45,9 +47,9 @@
     <hr class="smallabovemargin">
     <canvas id="cpuChart" class="respcanvas pie" width="100%" height="100%"></canvas>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-6 limitheight">
     <p class="lead nopadding">High Memory Processes</p>
-    <small class="smallabovemargin">Shows the processes using the most memory.</small><br />
+    <small class="smallabovemargin">Shows the processes using the most memory (%).</small><br />
     <small class="smallabovemargin legend">
       <span>
       <% split = @process_list_mem[0].split(" ") %>
@@ -75,7 +77,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-6 limitheight">
     <p class="lead nopadding">Network In stats</p>
     <small class="smallabovemargin">Shows received traffic over all time.</small><br />
     <small class="smallabovemargin legend">
@@ -88,7 +90,7 @@
     <hr class="smallabovemargin">
     <canvas id="recChart" class="respcanvas pie" width="100%" height="100%"></canvas>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-6 limitheight">
     <p class="lead nopadding">Network Out stats</p>
     <small class="smallabovemargin">Shows transmitted traffic over all time.</small><br />
     <small class="smallabovemargin legend">
@@ -105,7 +107,7 @@
 <script type="text/javascript">
   var cores = <%= @load %>;
   var loadChart = {
-    labels : [<%= @dates.map(&:to_s).join(", ") %>],
+    labels : [<%= raw(@dates.map(&:to_s).join(", ")) %>],
     datasets : [
       {
         fillColor : "rgba(151,187,205,0.5)",
