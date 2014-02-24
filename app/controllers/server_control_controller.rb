@@ -30,54 +30,114 @@ class ServerControlController < ApplicationController
     nets["meta"] = Hash.new
     innet = Stat.where(:type => "innet", :created_at.gte => (Date.today)).asc(:created_at)
     innet.each_with_index do |interf, index|
-      if index == 0 
-        old_value = Stat.where(:type => "innet", :value => interf.value, :created_at.gte => (Date.today - 1)).desc(:created_at).first
-      else
-        old_value = innet[index - 1]
-      end
-      if nets[interf.value].nil?
-        nets[interf.value] = Hash.new
-        traffic_s = (interf.valuetwo.to_i - old_value.valuetwo.to_i) / 1800 / 1024
-        if (traffic_s / 1024) >= 1
-          if (traffic_s / 1024 / 1024) >= 1
-            if (traffic_s / 1024 / 1024 / 1024) >= 1
-              traffic = traffic_s / 1024 / 1024 / 1024
-              nets["meta"]["type"] = "terabytes"
+      old_value = Stat.where(:_id.lt => interf._id, :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
+      unless old_value.nil?
+        if nets[interf.value].nil?
+          nets[interf.value] = Hash.new
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          if (traffic_s.to_f / 1024.0) >= 1.0
+            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
+              if (traffic_s / 1024.0 / 1024.0 / 1024.0) >= 1.0
+                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
+                nets["meta"]["type"] = "terabytes"
+              else
+                traffic = traffic_s.to_f / 1024.0 / 1024.0
+                nets["meta"]["type"] = "gigabytes"
+              end
             else
-              traffic = traffic_s / 1024 / 1024
-              nets["meta"]["type"] = "gigabytes"
+              traffic = traffic_s.to_f / 1024.0
+              nets["meta"]["type"] = "megabytes"
             end
           else
-            traffic = traffic_s / 1024
-            nets["meta"]["type"] = "megabytes"
+            traffic = traffic_s.to_f
+            nets["meta"]["type"] = "kilobytes"
           end
+          nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
         else
-          traffic = traffic_s
-          nets["meta"]["type"] = "kilobytes"
-        end
-        nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic
-      else
-        traffic_s = (interf.valuetwo.to_i - old_value.valuetwo.to_i) / 1200 / 1024
-        if (traffic_s / 1024) >= 1
-          if (traffic_s / 1024 / 1024) >= 1
-            if (traffic_s / 1024 / 1024 / 1024) >= 1
-              traffic = traffic_s / 1024 / 1024 / 1024
-              nets["meta"]["type"] = "terabytes"
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          if (traffic_s.to_f / 1024.0) >= 1.0
+            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
+              if (traffic_s.to_f / 1024.0 / 1024.0 / 1024.0) >= 1.0
+                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
+                nets["meta"]["type"] = "terabytes"
+              else
+                traffic = traffic_s.to_f / 1024.0 / 1024.0
+                nets["meta"]["type"] = "gigabytes"
+              end
             else
-              traffic = traffic_s / 1024 / 1024
-              nets["meta"]["type"] = "gigabytes"
+              traffic = traffic_s.to_f / 1024.0
+              nets["meta"]["type"] = "megabytes"
             end
           else
-            traffic = traffic_s / 1024
-            nets["meta"]["type"] = "megabytes"
+            traffic = traffic_s.to_f
+            nets["meta"]["type"] = "kilobytes"
           end
-        else
-          traffic = traffic_s
-          nets["meta"]["type"] = "kilobytes"
+          if traffic >= 0.0
+            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+          else
+            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
+          end
         end
-        nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic
       end
     end
+
+    outnets = Hash.new
+    outnets["meta"] = Hash.new
+    outnet = Stat.where(:type => "outnet", :created_at.gte => (Date.today)).asc(:created_at)
+    outnet.each_with_index do |interf, index|
+      old_value = Stat.where(:_id.lt => interf._id, :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
+      unless old_value.nil?
+        if outnets[interf.value].nil?
+          outnets[interf.value] = Hash.new
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          if (traffic_s.to_f / 1024.0) >= 1.0
+            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
+              if (traffic_s / 1024.0 / 1024.0 / 1024.0) >= 1.0
+                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
+                outnets["meta"]["type"] = "terabytes"
+              else
+                traffic = traffic_s.to_f / 1024.0 / 1024.0
+                outnets["meta"]["type"] = "gigabytes"
+              end
+            else
+              traffic = traffic_s.to_f / 1024.0
+              outnets["meta"]["type"] = "megabytes"
+            end
+          else
+            traffic = traffic_s.to_f
+            outnets["meta"]["type"] = "kilobytes"
+          end
+          outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+        else
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          if (traffic_s.to_f / 1024.0) >= 1.0
+            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
+              if (traffic_s.to_f / 1024.0 / 1024.0 / 1024.0) >= 1.0
+                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
+                outnets["meta"]["type"] = "terabytes"
+              else
+                traffic = traffic_s.to_f / 1024.0 / 1024.0
+                outnets["meta"]["type"] = "gigabytes"
+              end
+            else
+              traffic = traffic_s.to_f / 1024.0
+              outnets["meta"]["type"] = "megabytes"
+            end
+          else
+            traffic = traffic_s.to_f
+            outnets["meta"]["type"] = "kilobytes"
+          end
+          if traffic >= 0.0
+            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+          else
+            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
+          end
+        end
+      end
+    end
+
+    p nets
+    p outnets
   end
 
   def login
