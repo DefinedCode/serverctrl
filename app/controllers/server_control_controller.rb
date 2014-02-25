@@ -30,7 +30,7 @@ class ServerControlController < ApplicationController
     nets["meta"] = Hash.new
     innet = Stat.where(:type => "innet", :created_at.gte => (Date.today)).asc(:created_at)
     innet.each_with_index do |interf, index|
-      old_value = Stat.where(:_id.lt => interf._id, :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
+      old_value = Stat.where(:_id.lt => interf._id, :type => "innet", :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
       unless old_value.nil?
         if nets[interf.value].nil?
           nets[interf.value] = Hash.new
@@ -53,6 +53,7 @@ class ServerControlController < ApplicationController
             nets["meta"]["type"] = "kilobytes"
           end
           nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+          nets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
         else
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
           if (traffic_s.to_f / 1024.0) >= 1.0
@@ -74,8 +75,10 @@ class ServerControlController < ApplicationController
           end
           if traffic >= 0.0
             nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+            nets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
           else
             nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
+            nets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
           end
         end
       end
@@ -85,7 +88,7 @@ class ServerControlController < ApplicationController
     outnets["meta"] = Hash.new
     outnet = Stat.where(:type => "outnet", :created_at.gte => (Date.today)).asc(:created_at)
     outnet.each_with_index do |interf, index|
-      old_value = Stat.where(:_id.lt => interf._id, :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
+      old_value = Stat.where(:_id.lt => interf._id, :type => "outnet", :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
       unless old_value.nil?
         if outnets[interf.value].nil?
           outnets[interf.value] = Hash.new
@@ -108,6 +111,7 @@ class ServerControlController < ApplicationController
             outnets["meta"]["type"] = "kilobytes"
           end
           outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+          outnets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
         else
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
           if (traffic_s.to_f / 1024.0) >= 1.0
@@ -129,15 +133,17 @@ class ServerControlController < ApplicationController
           end
           if traffic >= 0.0
             outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+            outnets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
           else
             outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
+            outnets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
           end
         end
       end
     end
 
-    p nets
-    p outnets
+    @out = outnets
+    @in = nets
   end
 
   def login

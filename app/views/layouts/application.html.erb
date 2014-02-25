@@ -75,11 +75,17 @@
                 }
               }
               else {
-                if (alreadyRun >= 5) {
-                  var chart = new Chart(ctx).Line(data, {scaleOverride: true, scaleStartValue: 0, scaleSteps: cores, scaleStepWidth: 1, animation: false});
+                if (!($(this).hasClass("network"))) {
+                  if (alreadyRun >= 5) {
+                    var chart = new Chart(ctx).Line(data, {scaleOverride: true, scaleStartValue: 0, scaleSteps: cores, scaleStepWidth: 1, animation: false});
+                  }
+                  else {
+                    var chart = new Chart(ctx).Line(data, {scaleOverride: true, scaleStartValue: 0, scaleSteps: cores, scaleStepWidth: 1});
+                    alreadyRun++;
+                  }
                 }
                 else {
-                  var chart = new Chart(ctx).Line(data, {scaleOverride: true, scaleStartValue: 0, scaleSteps: cores, scaleStepWidth: 1});
+                  var chart = new Chart(ctx).Line(data, {});
                   alreadyRun++;
                 }
               }
