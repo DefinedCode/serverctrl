@@ -76,34 +76,38 @@
     <canvas id="memChart" class="respcanvas pie" width="100%" height="100%"></canvas>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-12 limitheight">
-    <p class="lead nopadding">Network inbound speed graph</p>
-    <small class="smallabovemargin">Shows network inbound speed over last 24 hours</small><br />
-    <small class="smallabovemargin legend"><%= @in["meta"]["type"].to_s %> / second. Key:
-    <span>
-      <% @interface_colors.each_with_index do |(key,value),index| %>
-        <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
-      <% end %>
-      </span></small>
-    <hr class="smallabovemargin">
-    <canvas id="netinChart" class="respcanvas network" width="1024" height="300"></canvas>
+<% unless @in.keys.count == 1 %>
+  <div class="row">
+    <div class="col-md-12 limitheight">
+      <p class="lead nopadding">Network inbound speed graph</p>
+      <small class="smallabovemargin">Shows network inbound speed over last 24 hours</small><br />
+      <small class="smallabovemargin legend"><%= @in["meta"]["type"].to_s %> / second. Key:
+      <span>
+        <% @interface_colors.each_with_index do |(key,value),index| %>
+          <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
+        <% end %>
+        </span></small>
+      <hr class="smallabovemargin">
+      <canvas id="netinChart" class="respcanvas network" width="1024" height="300"></canvas>
+    </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md-12 limitheight">
-    <p class="lead nopadding">Network outbound speed graph</p>
-    <small class="smallabovemargin">Shows network outbound speed over last 24 hours</small><br />
-    <small class="smallabovemargin legend"><%= @out["meta"]["type"].to_s %> / second. Key:
-    <span>
-      <% @interface_colors.each_with_index do |(key,value),index| %>
-        <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
-      <% end %>
-      </span></small>
-    <hr class="smallabovemargin">
-    <canvas id="netoutChart" class="respcanvas network" width="1024" height="300"></canvas>
+<% end %>
+<% unless @out.keys.count == 1 %>
+  <div class="row">
+    <div class="col-md-12 limitheight">
+      <p class="lead nopadding">Network outbound speed graph</p>
+      <small class="smallabovemargin">Shows network outbound speed over last 24 hours</small><br />
+      <small class="smallabovemargin legend"><%= @out["meta"]["type"].to_s %> / second. Key:
+      <span>
+        <% @interface_colors.each_with_index do |(key,value),index| %>
+          <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
+        <% end %>
+        </span></small>
+      <hr class="smallabovemargin">
+      <canvas id="netoutChart" class="respcanvas network" width="1024" height="300"></canvas>
+    </div>
   </div>
-</div>
+<% end %>
 <div class="row">
   <div class="col-md-6 limitheight">
     <p class="lead nopadding">Network In stats</p>
@@ -146,60 +150,64 @@
       }
     ]
   }
-  var netinChart = {
-    <% keys = @in.values[1].keys %>
-    <% @in.delete("meta") %>
-    <% keys.delete("color") %>
-    labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
-    datasets : [
-      <% @in.each do |interface| %>
-        {
-          <% name = interface[0] %>
-          <% interface = interface[1] %>
-          <% unless @analysed_network[name].nil? %>
-            fillColor : "<%= @analysed_network[name][:color] %>",
-            strokeColor : "<%= @analysed_network[name][:color] %>",
-            pointColor : "<%= @analysed_network[name][:color] %>",
-          <% else %>
-            <% color = interface["color"] %>
-            fillColor : "<%= color %>",
-            strokeColor : "<%= color %>",
-            pointColor : "<%= color %>",
-          <% end %>
-          pointStrokeColor : "#fff",
-          <% interface.delete("color") %>
-          data : [<%= interface.values.map(&:to_f).join(", ") %>]
-        },
-      <% end %>
-    ]
-  }
-  var netoutChart = {
-    <% keys = @out.values[1].keys %>
-    <% @out.delete("meta") %>
-    <% keys.delete("color") %>
-    labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
-    datasets : [
-      <% @out.each do |interface| %>
-        {
-          <% name = interface[0] %>
-          <% interface = interface[1] %>
-          <% unless @analysed_network[name].nil? %>
-            fillColor : "<%= @analysed_network[name][:color] %>",
-            strokeColor : "<%= @analysed_network[name][:color] %>",
-            pointColor : "<%= @analysed_network[name][:color] %>",
-          <% else %>
-            <% color = interface["color"] %>
-            fillColor : "<%= color %>",
-            strokeColor : "<%= color %>",
-            pointColor : "<%= color %>",
-          <% end %>
-          pointStrokeColor : "#fff",
-          <% interface.delete("color") %>
-          data : [<%= interface.values.map(&:to_f).join(", ") %>]
-        },
-      <% end %>
-    ]
-  }
+  <% unless @in.keys.count == 1 %>
+    var netinChart = {
+      <% keys = @in.values[1].keys %>
+      <% @in.delete("meta") %>
+      <% keys.delete("color") %>
+      labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
+      datasets : [
+        <% @in.each do |interface| %>
+          {
+            <% name = interface[0] %>
+            <% interface = interface[1] %>
+            <% unless @analysed_network[name].nil? %>
+              fillColor : "<%= @analysed_network[name][:color] %>",
+              strokeColor : "<%= @analysed_network[name][:color] %>",
+              pointColor : "<%= @analysed_network[name][:color] %>",
+            <% else %>
+              <% color = interface["color"] %>
+              fillColor : "<%= color %>",
+              strokeColor : "<%= color %>",
+              pointColor : "<%= color %>",
+            <% end %>
+            pointStrokeColor : "#fff",
+            <% interface.delete("color") %>
+            data : [<%= interface.values.map(&:to_f).join(", ") %>]
+          },
+        <% end %>
+      ]
+    }
+  <% end %>
+  <% unless @out.keys.count == 1 %>
+    var netoutChart = {
+      <% keys = @out.values[1].keys %>
+      <% @out.delete("meta") %>
+      <% keys.delete("color") %>
+      labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
+      datasets : [
+        <% @out.each do |interface| %>
+          {
+            <% name = interface[0] %>
+            <% interface = interface[1] %>
+            <% unless @analysed_network[name].nil? %>
+              fillColor : "<%= @analysed_network[name][:color] %>",
+              strokeColor : "<%= @analysed_network[name][:color] %>",
+              pointColor : "<%= @analysed_network[name][:color] %>",
+            <% else %>
+              <% color = interface["color"] %>
+              fillColor : "<%= color %>",
+              strokeColor : "<%= color %>",
+              pointColor : "<%= color %>",
+            <% end %>
+            pointStrokeColor : "#fff",
+            <% interface.delete("color") %>
+            data : [<%= interface.values.map(&:to_f).join(", ") %>]
+          },
+        <% end %>
+      ]
+    }
+  <% end %>
   var cpuChart = [
     {
       value: <%= @process_list_cpu[0].split(" ")[3].to_f  %>,
