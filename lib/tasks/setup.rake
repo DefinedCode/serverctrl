@@ -70,7 +70,9 @@ namespace :setup do
         end
         puts "Getting inital load stats."
         Rake::Task["generate_stats:load"].invoke
-        Rake::Task["generate_stats:load"].invoke
+        puts "Getting inital network stats."
+        Rake::Task["generate_stats:innet"].invoke
+        Rake::Task["generate_stats:outnet"].invoke
         puts "Precompiling assets."
         Rake::Task["assets:precompile"].invoke
         puts "----------------------------------------"
