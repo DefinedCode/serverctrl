@@ -25,16 +25,19 @@ class ServerControlController < ApplicationController
       network = File.open("/proc/net/dev") { |f| f.read }
       @analysed_network = view_context.analyse_network(network, os)
     end
+
     @load = @day_load_history.sort[-1].round(1)
+    @interface_colors = Hash.new
     nets = Hash.new
     nets["meta"] = Hash.new
     innet = Stat.where(:type => "innet", :created_at.gte => (Date.today)).asc(:created_at)
     innet.each_with_index do |interf, index|
       old_value = Stat.where(:_id.lt => interf._id, :type => "innet", :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
       unless old_value.nil?
+        seconds = ((interf.created_at.to_datetime - old_value.created_at.to_datetime) * 24 * 60 * 60).round(0)
         if nets[interf.value].nil?
           nets[interf.value] = Hash.new
-          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           if (traffic_s.to_f / 1024.0) >= 1.0
             if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
               if (traffic_s / 1024.0 / 1024.0 / 1024.0) >= 1.0
@@ -52,10 +55,26 @@ class ServerControlController < ApplicationController
             traffic = traffic_s.to_f
             nets["meta"]["type"] = "kilobytes"
           end
-          nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-          nets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
+          if traffic >= 0.0
+            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+          else
+            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
+          end
+          if @interface_colors[interf.value].nil?
+            if @analysed_network[interf.value].nil?
+              color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
+              @interface_colors[interf.value] = color
+              nets[interf.value]["color"] = color
+            else
+              color = @analysed_network[interf.value][:color]
+              @interface_colors[interf.value] = color
+              nets[interf.value]["color"] = color
+            end
+          else
+            nets[interf.value]["color"] = @interface_colors[interf.value]
+          end
         else
-          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           if (traffic_s.to_f / 1024.0) >= 1.0
             if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
               if (traffic_s.to_f / 1024.0 / 1024.0 / 1024.0) >= 1.0
@@ -75,10 +94,21 @@ class ServerControlController < ApplicationController
           end
           if traffic >= 0.0
             nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-            nets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
           else
-            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
-            nets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
+            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0.0
+          end
+          if @interface_colors[interf.value].nil?
+            if @analysed_network[interf.value].nil?
+              color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
+              @interface_colors[interf.value] = color
+              nets[interf.value]["color"] = color
+            else
+              color = @analysed_network[interf.value][:color]
+              @interface_colors[interf.value] = color
+              nets[interf.value]["color"] = color
+            end
+          else
+            nets[interf.value]["color"] = @interface_colors[interf.value]
           end
         end
       end
@@ -90,9 +120,10 @@ class ServerControlController < ApplicationController
     outnet.each_with_index do |interf, index|
       old_value = Stat.where(:_id.lt => interf._id, :type => "outnet", :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
       unless old_value.nil?
+        seconds = ((interf.created_at.to_datetime - old_value.created_at.to_datetime) * 24 * 60 * 60).round(0)
         if outnets[interf.value].nil?
           outnets[interf.value] = Hash.new
-          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           if (traffic_s.to_f / 1024.0) >= 1.0
             if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
               if (traffic_s / 1024.0 / 1024.0 / 1024.0) >= 1.0
@@ -110,10 +141,26 @@ class ServerControlController < ApplicationController
             traffic = traffic_s.to_f
             outnets["meta"]["type"] = "kilobytes"
           end
-          outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-          outnets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
+          if traffic >= 0.0
+            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
+          else
+            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
+          end
+          if @interface_colors[interf.value].nil?
+            if @analysed_network[interf.value].nil?
+              color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
+              @interface_colors[interf.value] = color
+              outnets[interf.value]["color"] = color
+            else
+              color = @analysed_network[interf.value][:color]
+              @interface_colors[interf.value] = color
+              outnets[interf.value]["color"] = color
+            end
+          else
+            outnets[interf.value]["color"] = @interface_colors[interf.value]
+          end
         else
-          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / 3600.0 / 1024.0
+          traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           if (traffic_s.to_f / 1024.0) >= 1.0
             if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
               if (traffic_s.to_f / 1024.0 / 1024.0 / 1024.0) >= 1.0
@@ -133,10 +180,21 @@ class ServerControlController < ApplicationController
           end
           if traffic >= 0.0
             outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-            outnets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
           else
             outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
-            outnets[interf.value]["color"] = generator = ColorGenerator.new saturation: 0.75, lightness: 0.5
+          end
+          if @interface_colors[interf.value].nil?
+            if @analysed_network[interf.value].nil?
+              color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
+              @interface_colors[interf.value] = color
+              outnets[interf.value]["color"] = color
+            else
+              color = @analysed_network[interf.value][:color]
+              @interface_colors[interf.value] = color
+              outnets[interf.value]["color"] = color
+            end
+          else
+            outnets[interf.value]["color"] = @interface_colors[interf.value]
           end
         end
       end

@@ -82,8 +82,8 @@
     <small class="smallabovemargin">Shows network inbound speed over last 24 hours</small><br />
     <small class="smallabovemargin legend"><%= @in["meta"]["type"].to_s %> / second. Key:
     <span>
-      <% @analysed_network.each_with_index do |interface, index| %>
-        <font style="color:<%= interface[1][:color] %> !important;"><%= interface[0] %><% if index == @analysed_network.size - 1 %>.<% else %>, <% end %></font>
+      <% @interface_colors.each_with_index do |(key,value),index| %>
+        <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
       <% end %>
       </span></small>
     <hr class="smallabovemargin">
@@ -96,8 +96,8 @@
     <small class="smallabovemargin">Shows network outbound speed over last 24 hours</small><br />
     <small class="smallabovemargin legend"><%= @out["meta"]["type"].to_s %> / second. Key:
     <span>
-      <% @analysed_network.each_with_index do |interface, index| %>
-        <font style="color:<%= interface[1][:color] %> !important;"><%= interface[0] %><% if index == @analysed_network.size - 1 %>.<% else %>, <% end %></font>
+      <% @interface_colors.each_with_index do |(key,value),index| %>
+        <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
       <% end %>
       </span></small>
     <hr class="smallabovemargin">
@@ -156,9 +156,16 @@
         {
           <% name = interface[0] %>
           <% interface = interface[1] %>
-          fillColor : "<%= @analysed_network[name][:color] %>",
-          strokeColor : "<%= @analysed_network[name][:color] %>",
-          pointColor : "<%= @analysed_network[name][:color] %>",
+          <% unless @analysed_network[name].nil? %>
+            fillColor : "<%= @analysed_network[name][:color] %>",
+            strokeColor : "<%= @analysed_network[name][:color] %>",
+            pointColor : "<%= @analysed_network[name][:color] %>",
+          <% else %>
+            <% color = interface["color"] %>
+            fillColor : "<%= color %>",
+            strokeColor : "<%= color %>",
+            pointColor : "<%= color %>",
+          <% end %>
           pointStrokeColor : "#fff",
           <% interface.delete("color") %>
           data : [<%= interface.values.map(&:to_f).join(", ") %>]
@@ -176,9 +183,16 @@
         {
           <% name = interface[0] %>
           <% interface = interface[1] %>
-          fillColor : "<%= @analysed_network[name][:color] %>",
-          strokeColor : "<%= @analysed_network[name][:color] %>",
-          pointColor : "<%= @analysed_network[name][:color] %>",
+          <% unless @analysed_network[name].nil? %>
+            fillColor : "<%= @analysed_network[name][:color] %>",
+            strokeColor : "<%= @analysed_network[name][:color] %>",
+            pointColor : "<%= @analysed_network[name][:color] %>",
+          <% else %>
+            <% color = interface["color"] %>
+            fillColor : "<%= color %>",
+            strokeColor : "<%= color %>",
+            pointColor : "<%= color %>",
+          <% end %>
           pointStrokeColor : "#fff",
           <% interface.delete("color") %>
           data : [<%= interface.values.map(&:to_f).join(", ") %>]

@@ -85,8 +85,13 @@
                   }
                 }
                 else {
-                  var chart = new Chart(ctx).Line(data, {});
-                  alreadyRun++;
+                  if (alreadyRun >= 5) {
+                    var chart = new Chart(ctx).Line(data, {datasetFill: false, animation: false});
+                  }
+                  else {
+                    var chart = new Chart(ctx).Line(data, {datasetFill: false, animation: true});
+                    alreadyRun++;
+                  }
                 }
               }
             });
