@@ -2,13 +2,13 @@ ServerCtrl::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  config.cache_classes = true # (FALSE FOR DEBUG)
+  config.cache_classes = false # (FALSE FOR DEBUG)
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both thread web servers
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
-  config.eager_load = true # (FALSE FOR DEBUG)
+  config.eager_load = false # (FALSE FOR DEBUG)
 
   # Full error reports are disabled and caching is turned on.
   config.consider_all_requests_local       = false

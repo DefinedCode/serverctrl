@@ -43,28 +43,28 @@ class ServerControlController < ApplicationController
             nets["meta"]["type"] = speeds["best"]
           else
             unless nets["meta"]["type"] == "terabytes"
-              unless nets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
+              unless nets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
                 unless nets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
-                  if nets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
+                  unless nets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
                     # DONE!
                   else
-                    if speeds["best"] == "kilobytes"
-                      nets["meta"]["type"] == "kilobytes"
-                    elsif speeds["best"] == "megabytes"
-                      nets["meta"]["type"] == "megabytes"
+                    if speeds["best"] == "terabytes"
+                      nets["meta"]["type"] == "terabytes"
                     elsif speeds["best"] == "gigabytes"
                       nets["meta"]["type"] == "gigabytes"
-                    elsif speeds["best"] == "terabytes"
-                      nets["meta"]["type"] == "terabytes"
+                    elsif speeds["best"] == "megabytes"
+                      nets["meta"]["type"] == "megabytes"
+                    elsif speeds["best"] == "kilobytes"
+                      nets["meta"]["type"] == "kilobytes"
                     else
                       # WTF?
                     end
                   end
                 else
-                  if speeds["best"] == "gigabytes"
-                    nets["meta"]["type"] == "gigabytes"
-                  elsif speeds["best"] == "terabytes"
+                  if speeds["best"] == "terabytes"
                     nets["meta"]["type"] == "terabytes"
+                  elsif speeds["best"] == "gigabytes"
+                    nets["meta"]["type"] == "gigabytes"
                   else
                     # WTF?
                   end
