@@ -42,40 +42,38 @@ class ServerControlController < ApplicationController
           if nets["meta"]["type"].nil?
             nets["meta"]["type"] = speeds["best"]
           else
-            unless nets["meta"]["type"] == "terabytes"
-              unless nets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
-                unless nets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
-                  unless nets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
-                    # DONE!
-                  else
-                    if speeds["best"] == "terabytes"
-                      nets["meta"]["type"] == "terabytes"
-                    elsif speeds["best"] == "gigabytes"
-                      nets["meta"]["type"] == "gigabytes"
-                    elsif speeds["best"] == "megabytes"
-                      nets["meta"]["type"] == "megabytes"
-                    elsif speeds["best"] == "kilobytes"
-                      nets["meta"]["type"] == "kilobytes"
-                    else
-                      # WTF?
-                    end
-                  end
-                else
-                  if speeds["best"] == "terabytes"
-                    nets["meta"]["type"] == "terabytes"
-                  elsif speeds["best"] == "gigabytes"
-                    nets["meta"]["type"] == "gigabytes"
-                  else
-                    # WTF?
-                  end
-                end
+            case speeds["best"]
+            when "terabytes"
+              nets["meta"]["type"] = speeds["best"]
+            when "gigabytes"
+              case nets["meta"]["type"]
+              when "terabytes"
+                # c o o l
               else
-                if speeds["best"] == "terabytes"
-                  nets["meta"]["type"] == "terabytes"
-                else
-                  # WTF?
-                end
+                nets["meta"]["type"] = speeds["best"]
               end
+            when "megabytes"
+              case nets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              else
+                nets["meta"]["type"] = speeds["best"]
+              end
+            when "kilobytes"
+              case nets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              when "megabytes"
+                # c o o l
+              else
+                nets["meta"]["type"] = speeds["best"]
+              end
+            else
+              # W H Y  W T F ?
             end
           end
           nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
@@ -98,40 +96,38 @@ class ServerControlController < ApplicationController
           if nets["meta"]["type"].nil?
             nets["meta"]["type"] = speeds["best"]
           else
-            unless nets["meta"]["type"] == "terabytes"
-              unless nets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
-                unless nets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
-                  if nets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
-                    # DONE!
-                  else
-                    if speeds["best"] == "kilobytes"
-                      nets["meta"]["type"] == "kilobytes"
-                    elsif speeds["best"] == "megabytes"
-                      nets["meta"]["type"] == "megabytes"
-                    elsif speeds["best"] == "gigabytes"
-                      nets["meta"]["type"] == "gigabytes"
-                    elsif speeds["best"] == "terabytes"
-                      nets["meta"]["type"] == "terabytes"
-                    else
-                      # WTF?
-                    end
-                  end
-                else
-                  if speeds["best"] == "gigabytes"
-                    nets["meta"]["type"] == "gigabytes"
-                  elsif speeds["best"] == "terabytes"
-                    nets["meta"]["type"] == "terabytes"
-                  else
-                    # WTF?
-                  end
-                end
+            case speeds["best"]
+            when "terabytes"
+              nets["meta"]["type"] = speeds["best"]
+            when "gigabytes"
+              case nets["meta"]["type"]
+              when "terabytes"
+                # c o o l
               else
-                if speeds["best"] == "terabytes"
-                  nets["meta"]["type"] == "terabytes"
-                else
-                  # WTF?
-                end
+                nets["meta"]["type"] = speeds["best"]
               end
+            when "megabytes"
+              case nets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              else
+                nets["meta"]["type"] = speeds["best"]
+              end
+            when "kilobytes"
+              case nets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              when "megabytes"
+                # c o o l
+              else
+                nets["meta"]["type"] = speeds["best"]
+              end
+            else
+              # W H Y  W T F ?
             end
           end
           nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
@@ -166,40 +162,38 @@ class ServerControlController < ApplicationController
           if outnets["meta"]["type"].nil?
             outnets["meta"]["type"] = speeds["best"]
           else
-            unless outnets["meta"]["type"] == "terabytes"
-              unless outnets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
-                unless outnets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
-                  if outnets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
-                    # DONE!
-                  else
-                    if speeds["best"] == "kilobytes"
-                      outnets["meta"]["type"] == "kilobytes"
-                    elsif speeds["best"] == "megabytes"
-                      outnets["meta"]["type"] == "megabytes"
-                    elsif speeds["best"] == "gigabytes"
-                      outnets["meta"]["type"] == "gigabytes"
-                    elsif speeds["best"] == "terabytes"
-                      outnets["meta"]["type"] == "terabytes"
-                    else
-                      # WTF?
-                    end
-                  end
-                else
-                  if speeds["best"] == "gigabytes"
-                    outnets["meta"]["type"] == "gigabytes"
-                  elsif speeds["best"] == "terabytes"
-                    outnets["meta"]["type"] == "terabytes"
-                  else
-                    # WTF?
-                  end
-                end
+            case speeds["best"]
+            when "terabytes"
+              outnets["meta"]["type"] = speeds["best"]
+            when "gigabytes"
+              case outnets["meta"]["type"]
+              when "terabytes"
+                # c o o l
               else
-                if speeds["best"] == "terabytes"
-                  outnets["meta"]["type"] == "terabytes"
-                else
-                  # WTF?
-                end
+                outnets["meta"]["type"] = speeds["best"]
               end
+            when "megabytes"
+              case outnets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              else
+                outnets["meta"]["type"] = speeds["best"]
+              end
+            when "kilobytes"
+              case outnets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              when "megabytes"
+                # c o o l
+              else
+                outnets["meta"]["type"] = speeds["best"]
+              end
+            else
+              # W H Y  W T F ?
             end
           end
           outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
@@ -222,40 +216,38 @@ class ServerControlController < ApplicationController
           if outnets["meta"]["type"].nil?
             outnets["meta"]["type"] = speeds["best"]
           else
-            unless outnets["meta"]["type"] == "terabytes"
-              unless outnets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
-                unless outnets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
-                  if outnets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
-                    # DONE!
-                  else
-                    if speeds["best"] == "kilobytes"
-                      outnets["meta"]["type"] == "kilobytes"
-                    elsif speeds["best"] == "megabytes"
-                      outnets["meta"]["type"] == "megabytes"
-                    elsif speeds["best"] == "gigabytes"
-                      outnets["meta"]["type"] == "gigabytes"
-                    elsif speeds["best"] == "terabytes"
-                      outnets["meta"]["type"] == "terabytes"
-                    else
-                      # WTF?
-                    end
-                  end
-                else
-                  if speeds["best"] == "gigabytes"
-                    outnets["meta"]["type"] == "gigabytes"
-                  elsif speeds["best"] == "terabytes"
-                    outnets["meta"]["type"] == "terabytes"
-                  else
-                    # WTF?
-                  end
-                end
+            case speeds["best"]
+            when "terabytes"
+              outnets["meta"]["type"] = speeds["best"]
+            when "gigabytes"
+              case outnets["meta"]["type"]
+              when "terabytes"
+                # c o o l
               else
-                if speeds["best"] == "terabytes"
-                  outnets["meta"]["type"] == "terabytes"
-                else
-                  # WTF?
-                end
+                outnets["meta"]["type"] = speeds["best"]
               end
+            when "megabytes"
+              case outnets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              else
+                outnets["meta"]["type"] = speeds["best"]
+              end
+            when "kilobytes"
+              case outnets["meta"]["type"]
+              when "terabytes"
+                # c o o l
+              when "gigabytes"
+                # c o o l
+              when "megabytes"
+                # c o o l
+              else
+                outnets["meta"]["type"] = speeds["best"]
+              end
+            else
+              # W H Y  W T F ?
             end
           end
           outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
