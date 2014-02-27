@@ -164,9 +164,8 @@
             <% interface = interface[1] %>
             <% values = Array.new %>
             <% interface.each do |val| %>
-              <% val.each do |tim| %>
-                <% values.push(tim[meta_in].to_f) %>
-              <% end %>
+              <% val = val[1] %>
+              <% values.push(val[meta_in].to_f) %>
             <% end %>
             <% unless @analysed_network[name].nil? %>
               fillColor : "<%= @analysed_network[name][:color] %>",
@@ -200,9 +199,8 @@
             <% interface = interface[1] %>
             <% values = Array.new %>
             <% interface.each do |val| %>
-              <% val.each do |tim| %>
-                <% values.push(tim[meta_out].to_f) %>
-              <% end %>
+              <% val = val[1] %>
+              <% values.push(val[meta_out].to_f) %>
             <% end %>
             <% unless @analysed_network[name].nil? %>
               fillColor : "<%= @analysed_network[name][:color] %>",
