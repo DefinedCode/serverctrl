@@ -167,6 +167,7 @@
               <% val = val[1] %>
               <% values.push(val[meta_in].to_f) %>
             <% end %>
+            <% values.shift %>
             <% unless @analysed_network[name].nil? %>
               fillColor : "<%= @analysed_network[name][:color] %>",
               strokeColor : "<%= @analysed_network[name][:color] %>",
@@ -202,6 +203,7 @@
               <% val = val[1] %>
               <% values.push(val[meta_out].to_f) %>
             <% end %>
+            <% values.shift %>
             <% unless @analysed_network[name].nil? %>
               fillColor : "<%= @analysed_network[name][:color] %>",
               strokeColor : "<%= @analysed_network[name][:color] %>",
