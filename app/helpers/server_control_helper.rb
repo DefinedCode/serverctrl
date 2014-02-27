@@ -71,4 +71,37 @@ module ServerControlHelper
     end
     return netstats
   end
+
+  def get_connection_speeds(kilob)
+    speed = Hash.new
+    speed["terabytes"] = (kilob.to_f / 1024.0 / 1024.0 / 1024.0).round(2)
+    if speed["terabytes"] <= 0.0
+      speed["terabytes"] = 0
+    end
+    speed["gigabytes"] = (kilob.to_f / 1024.0 / 1024.0).round(2)
+    if speed["gigabytes"] <= 0.0
+      speed["gigabytes"] = 0
+    end
+    speed["megabytes"] = (kilob.to_f / 1024.0).round(2)
+    if speed["megabytes"] <= 0.0
+      speed["megabytes"] = 0
+    end
+    speed["kilobytes"] = (kilob.to_f).round(2)
+    if speed["kilobytes"] <= 0.0
+      speed["kilobytes"] = 0
+    end
+    if speed["terabytes"] >= 1.0
+      speed["best"] = "terabytes"
+      return speed
+    elsif speed["gigabytes"] >= 1.0
+      speed["best"] = "gigabytes"
+      return speed
+    elsif speed["megabytes"] >= 1.0
+      speed["best"] = "megabytes"
+      return speed
+    else
+      speed["best"] = "kilobytes"
+      return speed
+    end
+  end
 end

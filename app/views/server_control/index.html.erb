@@ -81,12 +81,12 @@
     <div class="col-md-12 limitheight">
       <p class="lead nopadding">Network inbound speed graph</p>
       <small class="smallabovemargin">Shows network inbound speed over last 24 hours</small><br />
-      <small class="smallabovemargin legend"><%= @in["meta"]["type"].to_s %> / second. Key:
+      <small class="smallabovemargin legend">Key:
       <span>
         <% @interface_colors.each_with_index do |(key,value),index| %>
           <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
         <% end %>
-        </span></small>
+        </span> (<%= @in["meta"]["type"].to_s %> / second)</small>
       <hr class="smallabovemargin">
       <canvas id="netinChart" class="respcanvas network" width="1024" height="300"></canvas>
     </div>
@@ -97,12 +97,12 @@
     <div class="col-md-12 limitheight">
       <p class="lead nopadding">Network outbound speed graph</p>
       <small class="smallabovemargin">Shows network outbound speed over last 24 hours</small><br />
-      <small class="smallabovemargin legend"><%= @out["meta"]["type"].to_s %> / second. Key:
+      <small class="smallabovemargin legend">Key:
       <span>
         <% @interface_colors.each_with_index do |(key,value),index| %>
           <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
         <% end %>
-        </span></small>
+        </span> (<%= @out["meta"]["type"].to_s %> / second)</small>
       <hr class="smallabovemargin">
       <canvas id="netoutChart" class="respcanvas network" width="1024" height="300"></canvas>
     </div>
@@ -153,6 +153,7 @@
   <% unless @in.keys.count == 1 %>
     var netinChart = {
       <% keys = @in.values[1].keys %>
+      <% meta_in = @in["meta"]["type"] %>
       <% @in.delete("meta") %>
       <% keys.delete("color") %>
       labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
@@ -161,6 +162,12 @@
           {
             <% name = interface[0] %>
             <% interface = interface[1] %>
+            <% values = Array.new %>
+            <% interface.each do |val| %>
+              <% val.each do |tim| %>
+                <% values.push(tim[meta_in].to_f) %>
+              <% end %>
+            <% end %>
             <% unless @analysed_network[name].nil? %>
               fillColor : "<%= @analysed_network[name][:color] %>",
               strokeColor : "<%= @analysed_network[name][:color] %>",
@@ -173,7 +180,7 @@
             <% end %>
             pointStrokeColor : "#fff",
             <% interface.delete("color") %>
-            data : [<%= interface.values.map(&:to_f).join(", ") %>]
+            data : [<%= values.map(&:to_f).join(", ") %>]
           },
         <% end %>
       ]
@@ -182,6 +189,7 @@
   <% unless @out.keys.count == 1 %>
     var netoutChart = {
       <% keys = @out.values[1].keys %>
+      <% meta_out = @out["meta"]["type"] %>
       <% @out.delete("meta") %>
       <% keys.delete("color") %>
       labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
@@ -190,6 +198,12 @@
           {
             <% name = interface[0] %>
             <% interface = interface[1] %>
+            <% values = Array.new %>
+            <% interface.each do |val| %>
+              <% val.each do |tim| %>
+                <% values.push(tim[meta_out].to_f) %>
+              <% end %>
+            <% end %>
             <% unless @analysed_network[name].nil? %>
               fillColor : "<%= @analysed_network[name][:color] %>",
               strokeColor : "<%= @analysed_network[name][:color] %>",
@@ -202,7 +216,7 @@
             <% end %>
             pointStrokeColor : "#fff",
             <% interface.delete("color") %>
-            data : [<%= interface.values.map(&:to_f).join(", ") %>]
+            data : [<%= values.map(&:to_f).join(", ") %>]
           },
         <% end %>
       ]

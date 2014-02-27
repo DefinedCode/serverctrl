@@ -38,28 +38,47 @@ class ServerControlController < ApplicationController
         if nets[interf.value].nil?
           nets[interf.value] = Hash.new
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
-          if (traffic_s.to_f / 1024.0) >= 1.0
-            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
-              if (traffic_s / 1024.0 / 1024.0 / 1024.0) >= 1.0
-                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
-                nets["meta"]["type"] = "terabytes"
+          speeds = view_context.get_connection_speeds(traffic_s)
+          if nets["meta"]["type"].nil?
+            nets["meta"]["type"] = speeds["best"]
+          else
+            unless nets["meta"]["type"] == "terabytes"
+              unless nets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
+                unless nets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
+                  if nets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
+                    # DONE!
+                  else
+                    if speeds["best"] == "kilobytes"
+                      nets["meta"]["type"] == "kilobytes"
+                    elsif speeds["best"] == "megabytes"
+                      nets["meta"]["type"] == "megabytes"
+                    elsif speeds["best"] == "gigabytes"
+                      nets["meta"]["type"] == "gigabytes"
+                    elsif speeds["best"] == "terabytes"
+                      nets["meta"]["type"] == "terabytes"
+                    else
+                      # WTF?
+                    end
+                  end
+                else
+                  if speeds["best"] == "gigabytes"
+                    nets["meta"]["type"] == "gigabytes"
+                  elsif speeds["best"] == "terabytes"
+                    nets["meta"]["type"] == "terabytes"
+                  else
+                    # WTF?
+                  end
+                end
               else
-                traffic = traffic_s.to_f / 1024.0 / 1024.0
-                nets["meta"]["type"] = "gigabytes"
+                if speeds["best"] == "terabytes"
+                  nets["meta"]["type"] == "terabytes"
+                else
+                  # WTF?
+                end
               end
-            else
-              traffic = traffic_s.to_f / 1024.0
-              nets["meta"]["type"] = "megabytes"
             end
-          else
-            traffic = traffic_s.to_f
-            nets["meta"]["type"] = "kilobytes"
           end
-          if traffic >= 0.0
-            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-          else
-            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
-          end
+          nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
           if @interface_colors[interf.value].nil?
             if @analysed_network[interf.value].nil?
               color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
@@ -75,28 +94,47 @@ class ServerControlController < ApplicationController
           end
         else
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
-          if (traffic_s.to_f / 1024.0) >= 1.0
-            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
-              if (traffic_s.to_f / 1024.0 / 1024.0 / 1024.0) >= 1.0
-                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
-                nets["meta"]["type"] = "terabytes"
+          speeds = view_context.get_connection_speeds(traffic_s)
+          if nets["meta"]["type"].nil?
+            nets["meta"]["type"] = speeds["best"]
+          else
+            unless nets["meta"]["type"] == "terabytes"
+              unless nets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
+                unless nets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
+                  if nets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
+                    # DONE!
+                  else
+                    if speeds["best"] == "kilobytes"
+                      nets["meta"]["type"] == "kilobytes"
+                    elsif speeds["best"] == "megabytes"
+                      nets["meta"]["type"] == "megabytes"
+                    elsif speeds["best"] == "gigabytes"
+                      nets["meta"]["type"] == "gigabytes"
+                    elsif speeds["best"] == "terabytes"
+                      nets["meta"]["type"] == "terabytes"
+                    else
+                      # WTF?
+                    end
+                  end
+                else
+                  if speeds["best"] == "gigabytes"
+                    nets["meta"]["type"] == "gigabytes"
+                  elsif speeds["best"] == "terabytes"
+                    nets["meta"]["type"] == "terabytes"
+                  else
+                    # WTF?
+                  end
+                end
               else
-                traffic = traffic_s.to_f / 1024.0 / 1024.0
-                nets["meta"]["type"] = "gigabytes"
+                if speeds["best"] == "terabytes"
+                  nets["meta"]["type"] == "terabytes"
+                else
+                  # WTF?
+                end
               end
-            else
-              traffic = traffic_s.to_f / 1024.0
-              nets["meta"]["type"] = "megabytes"
             end
-          else
-            traffic = traffic_s.to_f
-            nets["meta"]["type"] = "kilobytes"
           end
-          if traffic >= 0.0
-            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-          else
-            nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0.0
-          end
+          nets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
           if @interface_colors[interf.value].nil?
             if @analysed_network[interf.value].nil?
               color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
@@ -124,28 +162,47 @@ class ServerControlController < ApplicationController
         if outnets[interf.value].nil?
           outnets[interf.value] = Hash.new
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
-          if (traffic_s.to_f / 1024.0) >= 1.0
-            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
-              if (traffic_s / 1024.0 / 1024.0 / 1024.0) >= 1.0
-                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
-                outnets["meta"]["type"] = "terabytes"
+          speeds = view_context.get_connection_speeds(traffic_s)
+          if outnets["meta"]["type"].nil?
+            outnets["meta"]["type"] = speeds["best"]
+          else
+            unless outnets["meta"]["type"] == "terabytes"
+              unless outnets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
+                unless outnets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
+                  if outnets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
+                    # DONE!
+                  else
+                    if speeds["best"] == "kilobytes"
+                      outnets["meta"]["type"] == "kilobytes"
+                    elsif speeds["best"] == "megabytes"
+                      outnets["meta"]["type"] == "megabytes"
+                    elsif speeds["best"] == "gigabytes"
+                      outnets["meta"]["type"] == "gigabytes"
+                    elsif speeds["best"] == "terabytes"
+                      outnets["meta"]["type"] == "terabytes"
+                    else
+                      # WTF?
+                    end
+                  end
+                else
+                  if speeds["best"] == "gigabytes"
+                    outnets["meta"]["type"] == "gigabytes"
+                  elsif speeds["best"] == "terabytes"
+                    outnets["meta"]["type"] == "terabytes"
+                  else
+                    # WTF?
+                  end
+                end
               else
-                traffic = traffic_s.to_f / 1024.0 / 1024.0
-                outnets["meta"]["type"] = "gigabytes"
+                if speeds["best"] == "terabytes"
+                  outnets["meta"]["type"] == "terabytes"
+                else
+                  # WTF?
+                end
               end
-            else
-              traffic = traffic_s.to_f / 1024.0
-              outnets["meta"]["type"] = "megabytes"
             end
-          else
-            traffic = traffic_s.to_f
-            outnets["meta"]["type"] = "kilobytes"
           end
-          if traffic >= 0.0
-            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-          else
-            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
-          end
+          outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
           if @interface_colors[interf.value].nil?
             if @analysed_network[interf.value].nil?
               color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
@@ -161,28 +218,47 @@ class ServerControlController < ApplicationController
           end
         else
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
-          if (traffic_s.to_f / 1024.0) >= 1.0
-            if (traffic_s.to_f / 1024.0 / 1024.0) >= 1.0
-              if (traffic_s.to_f / 1024.0 / 1024.0 / 1024.0) >= 1.0
-                traffic = traffic_s.to_f / 1024.0 / 1024.0 / 1024.0
-                outnets["meta"]["type"] = "terabytes"
+          speeds = view_context.get_connection_speeds(traffic_s)
+          if outnets["meta"]["type"].nil?
+            outnets["meta"]["type"] = speeds["best"]
+          else
+            unless outnets["meta"]["type"] == "terabytes"
+              unless outnets["meta"]["type"] == "gigabytes" and (speeds["best"] == "gigabytes" or speeds["best"] == "megabytes" or speeds["best"] == "megabytes")
+                unless outnets["meta"]["type"] == "megabytes" and (speeds["best"] == "megabytes" or speeds["best"] == "kilobytes")
+                  if outnets["meta"]["type"] == "kilobytes" and speeds["best"] == "kilobytes"
+                    # DONE!
+                  else
+                    if speeds["best"] == "kilobytes"
+                      outnets["meta"]["type"] == "kilobytes"
+                    elsif speeds["best"] == "megabytes"
+                      outnets["meta"]["type"] == "megabytes"
+                    elsif speeds["best"] == "gigabytes"
+                      outnets["meta"]["type"] == "gigabytes"
+                    elsif speeds["best"] == "terabytes"
+                      outnets["meta"]["type"] == "terabytes"
+                    else
+                      # WTF?
+                    end
+                  end
+                else
+                  if speeds["best"] == "gigabytes"
+                    outnets["meta"]["type"] == "gigabytes"
+                  elsif speeds["best"] == "terabytes"
+                    outnets["meta"]["type"] == "terabytes"
+                  else
+                    # WTF?
+                  end
+                end
               else
-                traffic = traffic_s.to_f / 1024.0 / 1024.0
-                outnets["meta"]["type"] = "gigabytes"
+                if speeds["best"] == "terabytes"
+                  outnets["meta"]["type"] == "terabytes"
+                else
+                  # WTF?
+                end
               end
-            else
-              traffic = traffic_s.to_f / 1024.0
-              outnets["meta"]["type"] = "megabytes"
             end
-          else
-            traffic = traffic_s.to_f
-            outnets["meta"]["type"] = "kilobytes"
           end
-          if traffic >= 0.0
-            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = traffic.round(2)
-          else
-            outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = 0
-          end
+          outnets[interf.value][interf.created_at.strftime("%H:%M").to_s] = speeds
           if @interface_colors[interf.value].nil?
             if @analysed_network[interf.value].nil?
               color = "#" + (ColorGenerator.new saturation: 0.75, lightness: 0.5).create_hex
