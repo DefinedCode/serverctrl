@@ -56,7 +56,7 @@
             {
                 total += parseInt(json[i].total);
             }
-            document.getElementById("commit_number").innerHTML="(Experimental build #" + total + ")";
+            document.getElementById("commit_number").innerHTML="(Build #" + total + ")";
         });
 
 
@@ -70,8 +70,14 @@
             <p class="splash-subhead">
                 Next generation control panel.
             </p>
+            <p class="splash-subhead">
+                Beware. Current build status: Experimental.
+            </p>
             <p>
-                <a href="https://github.com/will3942/serverctrl/archive/master.zip" class="pure-button pure-button-primary">Download <span id="commit_number">(Experimental build)</span></a>
+                <a href="https://github.com/will3942/serverctrl/archive/master.zip" class="pure-button pure-button-primary">Download <span id="commit_number">latest</span></a>
+            </p>
+            <p>
+                <a href="https://github.com/will3942/serverctrl" class="pure-button pure-button-primary">Github</a>
             </p>
         </div>
     </div>
