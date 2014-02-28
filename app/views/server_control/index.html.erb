@@ -150,7 +150,7 @@
               <% time = val[0] %>
               <% outnet = @out[name][time][meta_in].to_f %>
               <% val = val[1] %>
-              <% values.push((val[meta_in].to_f + outnet.to_f)) %>
+              <% values.push((val[meta_in].to_f + outnet.to_f).round(2)) %>
             <% end %>
             <% values.shift %>
             <% unless @analysed_network[name].nil? %>
