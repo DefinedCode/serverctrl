@@ -28,8 +28,9 @@ class ServerControlController < ApplicationController
 
     @load = @day_load_history.sort[-1].round(1)
     @interface_colors = Hash.new
+    @speed_type = Hash.new
     nets = Hash.new
-    nets["meta"] = Hash.new
+    @speed_type["meta"] = Hash.new
     innet = Stat.where(:type => "innet", :created_at.gte => (Date.today)).asc(:created_at)
     innet.each_with_index do |interf, index|
       old_value = Stat.where(:_id.lt => interf._id, :type => "innet", :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
@@ -39,30 +40,30 @@ class ServerControlController < ApplicationController
           nets[interf.value] = Hash.new
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           speeds = view_context.get_connection_speeds(traffic_s)
-          if nets["meta"]["type"].nil?
-            nets["meta"]["type"] = speeds["best"]
+          if @speed_type["meta"]["type"].nil?
+            @speed_type["meta"]["type"] = speeds["best"]
           else
             case speeds["best"]
             when "terabytes"
-              nets["meta"]["type"] = speeds["best"]
+              @speed_type["meta"]["type"] = speeds["best"]
             when "gigabytes"
-              case nets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               else
-                nets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "megabytes"
-              case nets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
                 # c o o l
               else
-                nets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "kilobytes"
-              case nets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
@@ -70,7 +71,7 @@ class ServerControlController < ApplicationController
               when "megabytes"
                 # c o o l
               else
-                nets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             else
               # W H Y  W T F ?
@@ -93,30 +94,30 @@ class ServerControlController < ApplicationController
         else
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           speeds = view_context.get_connection_speeds(traffic_s)
-          if nets["meta"]["type"].nil?
-            nets["meta"]["type"] = speeds["best"]
+          if @speed_type["meta"]["type"].nil?
+            @speed_type["meta"]["type"] = speeds["best"]
           else
             case speeds["best"]
             when "terabytes"
-              nets["meta"]["type"] = speeds["best"]
+              @speed_type["meta"]["type"] = speeds["best"]
             when "gigabytes"
-              case nets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               else
-                nets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "megabytes"
-              case nets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
                 # c o o l
               else
-                nets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "kilobytes"
-              case nets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
@@ -124,7 +125,7 @@ class ServerControlController < ApplicationController
               when "megabytes"
                 # c o o l
               else
-                nets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             else
               # W H Y  W T F ?
@@ -149,7 +150,6 @@ class ServerControlController < ApplicationController
     end
 
     outnets = Hash.new
-    outnets["meta"] = Hash.new
     outnet = Stat.where(:type => "outnet", :created_at.gte => (Date.today)).asc(:created_at)
     outnet.each_with_index do |interf, index|
       old_value = Stat.where(:_id.lt => interf._id, :type => "outnet", :value => interf.value).order_by([[:_id, :desc]]).limit(1).first
@@ -159,30 +159,30 @@ class ServerControlController < ApplicationController
           outnets[interf.value] = Hash.new
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           speeds = view_context.get_connection_speeds(traffic_s)
-          if outnets["meta"]["type"].nil?
-            outnets["meta"]["type"] = speeds["best"]
+          if @speed_type["meta"]["type"].nil?
+            @speed_type["meta"]["type"] = speeds["best"]
           else
             case speeds["best"]
             when "terabytes"
-              outnets["meta"]["type"] = speeds["best"]
+              @speed_type["meta"]["type"] = speeds["best"]
             when "gigabytes"
-              case outnets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               else
-                outnets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "megabytes"
-              case outnets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
                 # c o o l
               else
-                outnets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "kilobytes"
-              case outnets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
@@ -190,7 +190,7 @@ class ServerControlController < ApplicationController
               when "megabytes"
                 # c o o l
               else
-                outnets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             else
               # W H Y  W T F ?
@@ -213,30 +213,30 @@ class ServerControlController < ApplicationController
         else
           traffic_s = (interf.valuetwo.to_f - old_value.valuetwo.to_f) / seconds.to_f / 1024.0
           speeds = view_context.get_connection_speeds(traffic_s)
-          if outnets["meta"]["type"].nil?
-            outnets["meta"]["type"] = speeds["best"]
+          if @speed_type["meta"]["type"].nil?
+            @speed_type["meta"]["type"] = speeds["best"]
           else
             case speeds["best"]
             when "terabytes"
-              outnets["meta"]["type"] = speeds["best"]
+              @speed_type["meta"]["type"] = speeds["best"]
             when "gigabytes"
-              case outnets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               else
-                outnets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "megabytes"
-              case outnets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
                 # c o o l
               else
-                outnets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             when "kilobytes"
-              case outnets["meta"]["type"]
+              case @speed_type["meta"]["type"]
               when "terabytes"
                 # c o o l
               when "gigabytes"
@@ -244,7 +244,7 @@ class ServerControlController < ApplicationController
               when "megabytes"
                 # c o o l
               else
-                outnets["meta"]["type"] = speeds["best"]
+                @speed_type["meta"]["type"] = speeds["best"]
               end
             else
               # W H Y  W T F ?

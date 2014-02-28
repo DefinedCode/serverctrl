@@ -76,35 +76,19 @@
     <canvas id="memChart" class="respcanvas pie" width="100%" height="100%"></canvas>
   </div>
 </div>
-<% unless @in.keys.count == 1 %>
+<% unless @in.keys.count == 1 and @out.keys.count == 1 %>
   <div class="row">
     <div class="col-md-12 limitheight">
-      <p class="lead nopadding">Network inbound speed graph</p>
-      <small class="smallabovemargin">Shows network inbound speed over last 24 hours</small><br />
+      <p class="lead nopadding">Network speed graph</p>
+      <small class="smallabovemargin">Shows network speed over last 24 hours</small><br />
       <small class="smallabovemargin legend">Key:
       <span>
         <% @interface_colors.each_with_index do |(key,value),index| %>
           <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
         <% end %>
-        </span> (<%= @in["meta"]["type"].to_s %> / second)</small>
+        </span> (<%= @speed_type["meta"]["type"].to_s %> / second)</small>
       <hr class="smallabovemargin">
       <canvas id="netinChart" class="respcanvas network" width="1024" height="300"></canvas>
-    </div>
-  </div>
-<% end %>
-<% unless @out.keys.count == 1 %>
-  <div class="row">
-    <div class="col-md-12 limitheight">
-      <p class="lead nopadding">Network outbound speed graph</p>
-      <small class="smallabovemargin">Shows network outbound speed over last 24 hours</small><br />
-      <small class="smallabovemargin legend">Key:
-      <span>
-        <% @interface_colors.each_with_index do |(key,value),index| %>
-          <font style="color:<%= value %> !important;"><%= key %><% if index == @interface_colors.size - 1 %>.<% else %>, <% end %></font>
-        <% end %>
-        </span> (<%= @out["meta"]["type"].to_s %> / second)</small>
-      <hr class="smallabovemargin">
-      <canvas id="netoutChart" class="respcanvas network" width="1024" height="300"></canvas>
     </div>
   </div>
 <% end %>
@@ -150,11 +134,10 @@
       }
     ]
   }
-  <% unless @in.keys.count == 1 %>
-    var netinChart = {
+  <% unless @in.keys.count == 1 and @out.keys.count == 1 %>
+    var netChart = {
       <% keys = @in.values[1].keys %>
-      <% meta_in = @in["meta"]["type"] %>
-      <% @in.delete("meta") %>
+      <% meta_in = @speed_type["meta"]["type"] %>
       <% keys.delete("color") %>
       labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
       datasets : [
@@ -168,42 +151,6 @@
               <% outnet = @out[name][time][meta_in].to_f %>
               <% val = val[1] %>
               <% values.push((val[meta_in].to_f + outnet.to_f)) %>
-            <% end %>
-            <% values.shift %>
-            <% unless @analysed_network[name].nil? %>
-              fillColor : "<%= @analysed_network[name][:color] %>",
-              strokeColor : "<%= @analysed_network[name][:color] %>",
-              pointColor : "<%= @analysed_network[name][:color] %>",
-            <% else %>
-              <% color = interface["color"] %>
-              fillColor : "<%= color %>",
-              strokeColor : "<%= color %>",
-              pointColor : "<%= color %>",
-            <% end %>
-            pointStrokeColor : "#fff",
-            <% interface.delete("color") %>
-            data : [<%= values.map(&:to_f).join(", ") %>]
-          },
-        <% end %>
-      ]
-    }
-  <% end %>
-  <% unless @out.keys.count == 1 %>
-    var netoutChart = {
-      <% keys = @out.values[1].keys %>
-      <% meta_out = @out["meta"]["type"] %>
-      <% @out.delete("meta") %>
-      <% keys.delete("color") %>
-      labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
-      datasets : [
-        <% @out.each do |interface| %>
-          {
-            <% name = interface[0] %>
-            <% interface = interface[1] %>
-            <% values = Array.new %>
-            <% interface.each do |val| %>
-              <% val = val[1] %>
-              <% values.push(val[meta_out].to_f) %>
             <% end %>
             <% values.shift %>
             <% unless @analysed_network[name].nil? %>
