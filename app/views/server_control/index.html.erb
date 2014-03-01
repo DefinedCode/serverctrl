@@ -136,7 +136,9 @@
   }
   <% unless @in.keys.count == 1 and @out.keys.count == 1 %>
     var netChart = {
-      <% keys = @in.values[1].keys %>
+      <% keys = @in.max_by{|k,v| v.count} %>
+      <% keys = keys[1].keys %>
+      <% #keys = @in.values[1].keys %>
       <% meta_in = @speed_type["meta"]["type"] %>
       <% keys.delete("color") %>
       labels : ["<%= raw(keys.map(&:to_s).join("\",\"")) %>"],
