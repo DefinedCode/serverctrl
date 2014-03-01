@@ -22,7 +22,7 @@ class NginxParser
           line = lines[ptr].split(" ")
           address = line[1]
           parameters = line[2..-1]
-          parameters.map! do |e| 
+          parameters.map! do |e|
             e = e.gsub(/;/, '')
             e = e.split("=")
           end

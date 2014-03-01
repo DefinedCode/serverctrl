@@ -2,7 +2,7 @@ class ServerControlController < ApplicationController
   before_filter :login_required, :except=>['login']
 
   require 'open3'
-  
+
   def index
     stdin, stdout = Open3.popen3('uptime')
     uptime = stdout.gets(nil)
@@ -315,7 +315,66 @@ class ServerControlController < ApplicationController
   end
 
   def setup
-    
-  end
+    if request.post?
+      unless setup_complete
+        @stat = Stat.create(
+          'type' => 'setup_status',
+          'value' => 'true'
+        )
+      end
+      params.delete("authenticity_token")
+      params.delete("action")
+      params.delete("controller")
+      params.each do |k,v|
+        if v == "nginxconfdir"
+          if k[-1] = '/'
+            k.chop!
+          end
+        end
+        if Setup.where(:name => k).first.nil?
+          @setup = Setup.create(
+            'name' => k,
+            'data' => v,
+            )
+        else
+          @setup = Setup.where(:name => k).first
+          @setup.update_attributes(
+            'data' => v
+          )
+        end
+      end
+    else
+      if setup_complete
+        # Get all the values from the database here.
+        setup = Setup.all
+        @config_values = Hash.new
+        setup.each do |v|
+          @config_values[v.name] = v.data
+        end
+      else
+        stdin, stdout = Open3.popen3('whereis', 'nginx')
+        @nginx = stdout.gets(nil)
+        unless @nginx.nil?
+          @nginx = @nginx.split(" ")
+          if @nginx.count > 1
+            @nginx = @nginx[1..-1]
+          else
+            @nginx = nil
+          end
+        end
 
+        stdin, stdout = Open3.popen3('whereis', 'apache2')
+        @apache2 = stdout.gets(nil)
+
+        unless @apache2.nil?
+          @apache2 = @apache2.split(" ")
+          if @apache2.count > 1
+            @apache2 = @apache2[1..-1]
+          else
+            @apache2 = nil
+          end
+        end
+      end
+    end
+  end
 end

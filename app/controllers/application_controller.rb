@@ -24,4 +24,17 @@ class ApplicationController < ActionController::Base
     os = Stat.where(:type => "os").first.value
     return os
   end
+
+  def setup_complete
+    status = Stat.where(:type => "setup_status").first
+    if status.nil?
+      return false
+    elsif status.value == "false"
+      return false
+    elsif status.value == "true"
+      return true
+    else
+      return false
+    end
+  end
 end

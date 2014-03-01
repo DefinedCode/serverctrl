@@ -1,0 +1,40 @@
+<div class="row">
+  <p class="lead nopadding">Web server setup</p>
+  <small class="smallabovemargin">Currently supporting Nginx</small>
+  <hr class="smallabovemargin">
+  <span class="spacer">&nbsp;</span>
+  <form class="form-horizontal" role="form" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token.to_s %>">
+    <div class="form-group">
+      <label for="inputNginxConfDir" class="col-sm-2 control-label">Nginx Config Directory</label>
+      <div class="col-sm-10">
+        <% if @config_values.nil? %>
+            <% if @nginx.nil? %>
+              <p>(Didn't detect any config directories, usually /etc/nginx or /usr/local/nginx)</p>
+              <input type="text" class="form-control" id="inputNginxConfDir" name="nginxconfdir" placeholder="">
+            <% else %>
+              <p>(Potentially detected the following config directories<% @nginx.each do |v| %><%= v + ", " %> <% end %>)</p>
+              <input type="text" class="form-control" id="inputNginxConfDir" name="nginxconfdir" placeholder="">
+            <% end %>
+        <% else %>
+          <% unless @config_values["nginxconfdir"].nil? %>
+            <input type="text" class="form-control" id="inputNginxConfDir" name="nginxconfdir" value="<%= @config_values["nginxconfdir"].to_s %>">
+          <% else %>
+            <% if @nginx.nil? %>
+              <p>(Didn't detect any config directories, usually /etc/nginx or /usr/local/nginx)</p>
+              <input type="text" class="form-control" id="inputNginxConfDir" name="nginxconfdir" placeholder="">
+            <% else %>
+              <p>(Potentially detected the following config directories<% @nginx.each do |v| %><%= v + ", " %> <% end %>)</p>
+              <input type="text" class="form-control" id="inputNginxConfDir" name="nginxconfdir" placeholder="">
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <input type="submit" class="btn btn-success" value="Save">
+      </div>
+    </div>
+  </form>
+</div>
