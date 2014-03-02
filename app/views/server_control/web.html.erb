@@ -1,6 +1,15 @@
-<div class="row">
-  <p class="lead nopadding">Web Server Setup.</p>
-  <hr class="smallabovemargin">
-  <span class="spacer">&nbsp;</span>
-  <p><%= @parsed %></p>
-</div>
+<% unless @error %>
+  <div class="row">
+    <p class="lead nopadding">Web Server Setup.</p>
+    <hr class="smallabovemargin">
+    <span class="spacer">&nbsp;</span>
+    <p><%= @parsed %></p>
+  </div>
+<% else %>
+  <div class="row">
+    <p class="lead nopadding">Web Server Setup.</p>
+    <hr class="smallabovemargin">
+    <span class="spacer">&nbsp;</span>
+    <div class="alert alert-danger"><%= raw(@error) %></div>
+  </div>
+<% end %>

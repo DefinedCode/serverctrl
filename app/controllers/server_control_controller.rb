@@ -308,10 +308,15 @@ class ServerControlController < ApplicationController
   end
 
   def web
-    setup_nginx_dir = "/etc/nginx/conf.d/"
-    first_conf = "/Users/will3942/Desktop/nginx.conf"
-    parser = NginxParser.new(first_conf)
-    @parsed = parser.parse.to_json
+    @setup_nginx_dir = Setup.where(:name => "nginxconfdir").first
+    if @setup_nginx_dir.nil?
+      @error = "Please complete setup <a href='/setup'>here</a>."
+    else
+      @setup_nginx_dir = @setup_nginx_dir.data
+      first_conf = "/Users/will3942/Downloads/nginx/nginx.conf"
+      parser = NginxParser.new(first_conf)
+      @parsed = parser.parse.to_json
+    end
   end
 
   def setup
