@@ -12,8 +12,13 @@ Steps to run:
 
 1.  Clone the repository: `git clone https://github.com/will3942/serverctrl.git`
 2.  `cd serverctrl`
-3.  `./setup.sh`
-
+3.  `./setup.sh`  
+  
+To update:  
+  
+1. `./update.sh`  
+  
+  
 Follow the instructions outputted by the above command to complete installation.
 
 ## FAQ
